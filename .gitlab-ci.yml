@@ -13,7 +13,7 @@ staging:
   - apt-get update -qy
   - apt-get install -y ruby-dev
   - gem install dpl
-  - dpl --provider=heroku --app=agreelance --api-key=$HEROKU_STAGING_API_KEY
+  - dpl --provider=heroku --app=tdt4242-agreelance --api-key=$HEROKU_STAGING_API_KEY
   only:
   - master
 
