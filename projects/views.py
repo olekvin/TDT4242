@@ -466,6 +466,11 @@ def task_permissions(request, project_id, task_id):
 
 
 @login_required
+def edit_task(request, project_id, task_id):
+    return redirect("task_view", project_id=project_id, task_id=task_id)
+
+
+@login_required
 def delete_file(request, file_id):
     f = TaskFile.objects.get(pk=file_id)
     f.delete()
