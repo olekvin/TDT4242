@@ -16,7 +16,9 @@
   <p>Agreed payment: {{task_accepted_offer.price}}</p>
 
   <p class="">{{ task.description }}</p>
-
+  {% if user_permissions.owner %}
+  <a href="{% url "edit_task" project.id task.id %}" class="btn btn-primary">Edit task</a>
+  {% endif %}
 
   <h3 class="my-3">Accepted offer:</h3>
 

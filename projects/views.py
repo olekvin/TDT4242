@@ -18,6 +18,7 @@ from .forms import (
     TaskOfferForm,
     TaskOfferResponseForm,
     TaskPermissionForm,
+    EditTaskForm,
     DeliveryForm,
     TaskDeliveryResponseForm,
     TeamForm,
@@ -431,11 +432,11 @@ def task_view(request, project_id, task_id):
 @login_required
 def task_permissions(request, project_id, task_id):
     user = request.user
-    task = Task.objects.get(pk=task_id)
+    task = Task.objects.get(pk=task_id)  # TODO: try except
     project = Project.objects.get(pk=project_id)
     accepted_task_offer = task.accepted_task_offer()
-    if project.user == request.user.profile or user == accepted_task_offer.offerer.user:
-        task = Task.objects.get(pk=task_id)
+    if project.user == request.user.profile or user == accepted_task_offer.offerer.user:  #TODO: user vs request.user
+        task = Task.objects.get(pk=task_id)  # TODO: ?
         if int(project_id) == task.project.id:
             if request.method == "POST":
                 task_permission_form = TaskPermissionForm(request.POST)
@@ -462,6 +463,32 @@ def task_permissions(request, project_id, task_id):
                 "projects/task_permissions.html",
                 {"project": project, "task": task, "form": task_permission_form,},
             )
+    return redirect("task_view", project_id=project_id, task_id=task_id)
+
+
+@login_required
+def edit_task(request, project_id, task_id):
+    user = request.user
+    task = get_object_or_404(Task, pk=task_id)
+    project = get_object_or_404(Project, pk=project_id)
+    if project.user != user.profile:
+        return redirect("task_view", project_id=project_id, task_id=task_id)
+    if request.method == "POST":
+        edit_task_form = EditTaskForm(request.POST)
+        if edit_task_form.is_valid():
+            task.title = edit_task_form.cleaned_data["title"]
+            task.description = edit_task_form.cleaned_data["description"]
+            task.budget = edit_task_form.cleaned_data["budget"]
+            task.save()
+            return redirect("task_view", project_id=project_id, task_id=task_id)
+    else:
+        edit_task_form = EditTaskForm(instance=task)
+        return render(
+            request,
+            "projects/task_edit.html",
+            {"project": project, "task": task, "form": edit_task_form},
+        )
+
     return redirect("task_view", project_id=project_id, task_id=task_id)
 
 

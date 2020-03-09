@@ -30,6 +30,7 @@
             <h4>{{task.title}}</h4>
             <p>Budget: {{task.budget}} </p>
             <p>Description: <br> {{task.description}}</p>
+            <a href="{% url "edit_task" project.id task.id %}" class="btn btn-primary">Edit task</a>
           </div>
           {% endfor %}
         </div>
