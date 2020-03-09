@@ -1,6 +1,6 @@
 from django import forms
 from user.models import Profile
-from .models import Project, TaskFile, TaskOffer, Delivery, ProjectCategory, Team
+from .models import Project, Task, TaskFile, TaskOffer, Delivery, ProjectCategory, Team
 from django.contrib.auth.models import User
 
 
@@ -39,6 +39,20 @@ class TaskOfferForm(forms.ModelForm):
             "title",
             "description",
             "price",
+        )
+
+
+class EditTaskForm(forms.ModelForm):
+    title = forms.CharField(max_length=200)
+    description = forms.Textarea()
+    price = forms.NumberInput()
+
+    class Meta:
+        model = Task
+        fields = (
+            "title",
+            "description",
+            "budget",
         )
 
 
