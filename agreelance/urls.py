@@ -26,5 +26,9 @@ urlpatterns = [
     path("user/", include("user.urls")),
     path("projects/", include("projects.urls")),
     path("payment/", include("payment.urls")),
-    path("contact-us/", TemplateView.as_view(template_name="contact-us.html"), name="contact-us"),
+    path(
+        "contact-us/",
+        TemplateView.as_view(template_name="contact-us.html"),
+        name="contact-us",
+    ),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

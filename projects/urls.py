@@ -16,10 +16,6 @@ urlpatterns = [
         views.task_permissions,
         name="task_permissions",
     ),
-    path(
-        "<project_id>/tasks/<task_id>/edit/",
-        views.edit_task,
-        name="edit_task",
-    ),
+    path("<project_id>/tasks/<task_id>/edit/", views.edit_task, name="edit_task",),
     path("delete_file/<file_id>", views.delete_file, name="delete_file"),
 ]

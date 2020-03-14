@@ -98,7 +98,7 @@ def new_project(request):
     return render(request, "projects/new_project.html", {"form": form})
 
 
-def project_view(request, project_id):
+def project_view(request, project_id):  # TODO: The post requests should probably require login, especially offer submit
     project = Project.objects.get(pk=project_id)
     tasks = project.tasks.all()
     total_budget = 0  # Initializes the total budget to 0
@@ -435,7 +435,9 @@ def task_permissions(request, project_id, task_id):
     task = Task.objects.get(pk=task_id)  # TODO: try except
     project = Project.objects.get(pk=project_id)
     accepted_task_offer = task.accepted_task_offer()
-    if project.user == request.user.profile or user == accepted_task_offer.offerer.user:  #TODO: user vs request.user
+    if (
+        project.user == request.user.profile or user == accepted_task_offer.offerer.user
+    ):  # TODO: user vs request.user
         task = Task.objects.get(pk=task_id)  # TODO: ?
         if int(project_id) == task.project.id:
             if request.method == "POST":
