@@ -59,6 +59,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "agreelance.urls"
 
+SESSION_COOKIE_AGE = 60 * 15  # Logout after session is 15 minutes old
+
+SESSION_SAVE_EVERY_REQUEST = True  # Save session data on each request, resetting cookie age
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
