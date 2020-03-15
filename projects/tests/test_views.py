@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from projects.models import ProjectCategory, Project, Task
+from projects.models import ProjectCategory, Project, Task, TaskOffer, Team
+from projects.views import get_user_task_permissions
 from user.models import User
 import json
 
@@ -100,3 +101,35 @@ class TestViews(TestCase):
     #     self.assertEquals(
     #         self.test_task.taskoffer_set.count(), 0
     #     )  # We need to check that the offer has not been created
+
+    def test_get_user_task_permissions(self):
+        assert get_user_task_permissions(self.test_user1, self.test_task)['owner']  # Need to test owner
+
+        # Need to test the profile.task_participants_ACTIONs
+        assert not get_user_task_permissions(self.test_user2, self.test_task)['read']
+        self.test_task.read.add(self.test_user2.profile)
+        assert get_user_task_permissions(self.test_user2, self.test_task)['read']
+
+        # Need to test if the user gets team permissions
+        assert not get_user_task_permissions(self.test_user2, self.test_task)['view_task']
+        test_team = Team.objects.create(
+            name='Team name',
+            task=self.test_task,
+        )
+        test_team.members.add(self.test_user2.profile)
+        assert get_user_task_permissions(self.test_user2, self.test_task)['view_task']
+
+        # Need to test if the user gets permissions after an accepted task offer
+        assert not get_user_task_permissions(self.test_user2, self.test_task)['modify']
+        TaskOffer.objects.create(
+            task=self.test_task,
+            title='Test offer title',
+            description='some description',
+            offerer=self.test_user2.profile,
+            status='a',
+            feedback=''
+        )
+        assert get_user_task_permissions(self.test_user2, self.test_task)['modify']
+
+        assert not get_user_task_permissions(self.test_user2, self.test_task)['owner']
+
